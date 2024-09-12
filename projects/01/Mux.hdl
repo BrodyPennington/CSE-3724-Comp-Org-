@@ -14,6 +14,13 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-    // Put your code here:
+        Not(in=sel, out=notSel);    // brody -- inverts selector
+        And(a=a, b=notSel, out=aAndNotsel); // brody -- outputs a only when sel is 0
+
+        And(a=b, b=sel, out=bAndsel); // brody -- outputs b only when sel is 1
+
+        Or(a=aAndNotsel, b=bAndsel, out=out); // brody -- selects which value to pass. If sel is 0, aAndNotsel will be 1 and will be passed. Out == a
+                                              //       -- if sel is 1, bAndsel will be 1 and will be passed. Out == b
+        
 
 }

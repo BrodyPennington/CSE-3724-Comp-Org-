@@ -14,12 +14,15 @@ CHIP Xor {
 
     PARTS:
     
-    Not(in=a, out=nota);
-    And(a=nota, b=b, out=lhs);
-    
-    Not(in=b, out=notb);
-    And(a=a, b=notb, out=rhs);
+    Not(in=a, out=nota); // brody -- inverts a
+    And(a=nota, b=b, out=x); // brody -- nota And b = x, x only becomes true when a is 0 and b is 1
 
-    Or(a=lhs, b=rhs, out=out);
+    
+    Not(in=b, out=notb);  // brody -- inverts b
+    And(a=a, b=notb, out=y); // brody -- a And notb = y, y is only true when a is 1 and b is 0
+
+
+    Or(a=x, b=y, out=out); // brody -- Or gate outputs true only when one of the inputs is true. 
+
 
 }

@@ -14,8 +14,8 @@
     OUT out;
 
     PARTS:
-        Nand(a=a, b=a, out=notA);
-        Nand(a=b, b=b, out=notB);
+        Nand(a=a, b=a, out=notA); // brody -- you set both variables to a, use the Nand gate to invert a, then store the output in notA. Ex. a=1, Not(1 and 1) = 0;
+        Nand(a=b, b=b, out=notB); // brody -- same as above, except for b. Ex. b=0 Not(0 and 0) = 1;
 
-        Nand(a=notA, b=notB, out=out);
+        Nand(a=notA, b=notB, out=out); // brody -- take input of notA and notB, invert those, and that is your final answer. Ex. notA = 0, notB = 1, Not(0 And 1) = 1
     }
