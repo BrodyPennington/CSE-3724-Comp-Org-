@@ -16,6 +16,33 @@ CHIP DMux8Way {
     OUT a, b, c, d, e, f, g, h;
 
     PARTS:
-    // Put your code here:
+        DMux(in=in, sel=sel[2], a=abcd, b=efgh);    // brody -- this is basically a doubled version of the Dmux4Way gate.
+                                                    //          this Dmux gate takes the most significant bit of the selector and splits the input into two groups
+                                                    //          if sel[2] == 0, in -> a
+                                                    //          if sel[2] == 1, in -> b
+                                                    
+                                                
+        DMux4Way(in=abcd, sel=sel[0..1], a=a, b=b, c=c, d=d);   // brody -- this gate splits the abcd branch into four outputs based on the 1 and 0 bits of the selector.
+                                                                //          sel[0..1] == 00, a=in
+                                                                //          sel[0..1] == 01, b=in
+                                                                //          sel[0..1] == 10, c=in
+                                                                //          sel[0..1] == 11, d=in
+
+
+        DMux4Way(in=efgh, sel=sel[0..1], a=e, b=f, c=g, d=h);   // brody -- this gate splits the efgh branch the exact same way as the branch above, but only when sel[2] == 1.
+                                                                //          sel[0..1] == 00, a=in
+                                                                //          sel[0..1] == 01, b=in
+                                                                //          sel[0..1] == 10, c=in
+                                                                //          sel[0..1] == 11, d=in
+
+
+
+
+
+
+
+
+
+        // note to self, bits are read from right to left, with left being the most significant bit (2).
 
 }
