@@ -10,9 +10,15 @@
 
 CHIP Or8Way {
     IN in[8];
-    OUT out;
+    OUT out;    // brody -- single bit 1 if any inputs are 1, single bit 0 if all inputs are 0
 
     PARTS:
-    // Put your code here:
+        Or(a=in[0], b=in[1], out=o1);   // brody -- o1 is 1 if (in[0] || in[1] == 1)
+        Or(a=o1, b=in[2], out=o2);      // brody -- o2 is 1 if (o1 || in[2] == 1)
+        Or(a=o2, b=in[3], out=o3);      // brody -- o3 is 1 if (o2 || in[3] == 1)
+        Or(a=o3, b=in[4], out=o4);      // brody -- o4 is 1 if (o3 || in[4] == 1)
+        Or(a=o4, b=in[5], out=o5);      // brody -- o5 is 1 if (o4 || in[5] == 1)
+        Or(a=o5, b=in[6], out=o6);      // brody -- o6 is 1 if (o5 || in[6] == 1)
+        Or(a=o6, b=in[7], out=out);     // brody -- out is 1 if (o6 || in[7] == 1)
 
 }

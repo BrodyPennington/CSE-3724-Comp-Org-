@@ -21,7 +21,11 @@ CHIP DMux4Way {
         
         
         DMux(in=ab, sel=sel[0], a=a, b=b);  // brody --  if sel[0] == 0, out == a or c
-        DMux(in=cd, sel=sel[0], a=c, b=d);  // brody -- if sel[0] == 1, out == b or d
+                                            //           when sel == 00, input is routed to a
+                                            //           when sel == 01, input is routed to b
 
+        DMux(in=cd, sel=sel[0], a=c, b=d);  // brody -- if sel[0] == 1, out == c or d
+                                            //          when sel == 10, input is routed to c
+                                            //          when sel == 11, input is routed to d
 
 }
