@@ -1,0 +1,21 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/And.hdl
+
+/**
+ * And gate: 
+ * out = 1 if (a == 1 and b == 1)
+ *       0 otherwise
+ */
+
+CHIP And {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    Nand(a=a, b=b, out=nandOut); // brody -- takes input of a and b, finds not(a) and not(b), stores output in nandOut.
+    Nand(a=nandOut, b=nandOut, out=out); // brody -- takes the output of nandOut, inverts it using a second Nand gate, outputing the final result. 
+    
+
+}

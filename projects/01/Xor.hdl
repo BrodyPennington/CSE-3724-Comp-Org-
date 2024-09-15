@@ -1,0 +1,28 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Xor.hdl
+
+/**
+ * Exclusive-or gate:
+ * out = not (a == b)
+ */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    
+    Not(in=a, out=nota); // brody -- inverts a
+    And(a=nota, b=b, out=x); // brody -- nota And b = x, x only becomes true when a is 0 and b is 1
+
+    
+    Not(in=b, out=notb);  // brody -- inverts b
+    And(a=a, b=notb, out=y); // brody -- a And notb = y, y is only true when a is 1 and b is 0
+
+
+    Or(a=x, b=y, out=out); // brody -- Or gate outputs true only when one of the inputs is true. 
+
+
+}
