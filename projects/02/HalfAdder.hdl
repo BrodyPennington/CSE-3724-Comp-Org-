@@ -13,6 +13,7 @@ CHIP HalfAdder {
         carry;  // Left bit of a + b
 
     PARTS:
-    // Put you code here:
+        Xor(a=a, b=b, out=sum); // brody -- computes the sum of a and b
+        And(a=a, b=b, out=carry); // brody -- computes the carry of a and b, only outputs 1 when both a and b are 1
 
 }
