@@ -42,7 +42,67 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+
+        // x input
+        // zero's the x input. if zx = 1, zero x, else pass x
+        // input the possibly zero'd x, output the negated x.
+        // based on the nx (negation x), the output is selected.
+        // if nx = 1, the negated (nx) version is selected
+        // if nx = 0, the original x or it's zero'd form is selected
+        Mux16(a=x, b=false, sel=zx, out=zerox);     
+        Not16(in=zerox, out=notx);                  
+        Mux16(a=zerox, b=notx, sel=nx, out=outx);   
+                                                    
+                                                    
+
+        // y input
+        // zero's the y input. if zy = 1, zero y, else pass y
+        // input the possibly zero'd y, output the negated y.
+        // based on the ny (negation y), the output is selected.
+        // if ny = 1, the negated (ny) version is selected
+        // if ny = 0, the original y or it's zero'd form is selected
+        Mux16(a=y, b=false, sel=zy, out=zeroy);     
+        Not16(in=zeroy, out=noty);                  
+        Mux16(a=zeroy, b=noty, sel=ny, out=outy);   
+                                                    
+
+
+        // 16bit add gate that adds inpx (the negated/zeroed value of x) and inpy (the negated/zeroed value of y).
+        // 16bit AND gate that performs the operation on the two inpx and inpy operations.                                            
+        // the f control bit selects whether the AND operation or the Add operation will be outputed.
+        //       if (f == 0)
+        //          out(fxy) = andxy
+        //       elseif (f == 1)
+        //          out(fxy) = addxy
+        Add16(a=outx, b=outy, out=addxy);           
+        And16(a=outx, b=outy, out=andxy);           
+        Mux16(a=andxy, b=addxy, sel=f, out=fxy);    
+                                                    
+
+        //  16bit Not gate negates the fxy output
+        //  the no control bit selects whether the original result (fxy) is outputed or the negated result (notfxy)
+        //  if (no == 0)
+        //      out = fxy
+        //  if (no == 1)
+        //      out = notfxy
+
+        //  in the same 16bit mux gate, the 16bit result from the ALU is split into two parts:
+        //  prz1 is the lower 8 bits
+        //  prx2 is the upper 8 bits
+        //  the MSB is set to ng, this checks if the final ALU output is less than zero in the following code
+        Not16(in=fxy, out=notfxy);
+        Mux16(a=fxy, b=notfxy, sel=no, out=out, out[0..7] = 8bit1, out[8..15] = 8bit2, out[15] = ng);
+
+
+        // first Or8way gate checks if any bit in the first (lsb's) 8bit block is 1. if there is, the output (8out1) will be 1, else 8out1 is 0
+        // second Or8way gate checks if any bit in the second (msb's) 8bit block is 1. if there is, the output (8out1) will be 1, else 8out1 is 0
+        // in the Or gate, it takes the output from both Or8way gates to check if either is 1. If either is 1, it will will output 1 to not8out
+
+        // the Not gate negates the above output. if not8out is 1, zr will be 0. if not8out is 0, zr will be 1.
+        Or8Way(in=8bit1, out=8out1);
+        Or8Way(in=8bit2, out=8out2);
+        Or(a=8out1, b=8out2, out=not8out);
+        Not(in=not8out, out=zr);
 
 }
 
