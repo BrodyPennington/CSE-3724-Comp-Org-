@@ -42,23 +42,31 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-        
-        Mux16(a=x, b=false, sel=zx, out=zerox);
-        Not16(in=zerox, out=notx);
-        Mux16(a=zerox, b=notx, sel=nx, out=inpx);
+        // brody -- x input
+        Mux16(a=x, b=false, sel=zx, out=zerox);     // brody -- zero's the x input. if zx = 1, zero x, else pass x
+        Not16(in=zerox, out=notx);                  // brody -- input the possibly zero'd x, output the negated x.
+        Mux16(a=zerox, b=notx, sel=nx, out=inpx);   // brody -- based on the nx (negation x), the output is selected. 
+                                                    //       -- if nx = 1, the negated (nx) version is selected
+                                                    //       -- if nx = 0, the original x or it's zero'd form is selected
+
+        // brody -- y input
+        Mux16(a=y, b=false, sel=zy, out=zeroy);     // brody -- zero's the y input. if zy = 1, zero y, else pass y
+        Not16(in=zeroy, out=noty);                  // brody -- input the possibly zero'd y, output the negated y.
+        Mux16(a=zeroy, b=noty, sel=ny, out=inpy);   // brody -- based on the ny (negation y), the output is selected.
+                                                    //       -- if ny = 1, the negated (ny) version is selected
+                                                    //       -- if ny = 0, the original y or it's zero'd form is selected
 
         
-        Mux16(a=y, b=false, sel=zy, out=zeroy);
-        Not16(in=zeroy, out=noty);
-        Mux16(a=zeroy, b=noty, sel=ny, out=inpy);
+        Add16(a=inpx, b=inpy, out=addxy);           // brody -- 16bit add gate that adds inpx (the negated/zeroed value of x) and inpy (the negated/zeroed value of y).
+        And16(a=inpx, b=inpy, out=andxy);           // brody -- 16bit AND gate that performs the operation on the two inpx and inpy operations.
+        Mux16(a=andxy, b=addxy, sel=f, out=fxy);    // brody -- the f control bit selects whether the AND operation or the Add operation will be outputed.
+                                                    //       -- if (f == 0)
+                                                    //       --     out(fxy) = andxy
+                                                    //       -- elseif (f == 1)
+                                                    //       --     out(fxy) = addxy
 
         
-        Add16(a=inpx, b=inpy, out=addxy);
-        And16(a=inpx, b=inpy, out=andxy);
-        Mux16(a=andxy, b=addxy, sel=f, out=fxy);
-
-        
-        Not16(in=fxy, out=notfxy);
+        Not16(in=fxy, out=notfxy);                  // brody -- negates the fxy output
         Mux16(a=fxy, b=notfxy, sel=no, out=out, out[0..7] = pzr1, out[8..15] = pzr2, out[15] = ng);
 
         
