@@ -13,9 +13,9 @@ CHIP Add16 {
     OUT out[16];
 
     PARTS:
-        HalfAdder(a=a[0], b=b[0], sum=out[0], carry=c1); // brody -- adds the LSB
+        HalfAdder(a=a[0], b=b[0], sum=out[0], carry=c1);        // brody -- adds the LSB
 
-        FullAdder(a=a[1], b=b[1], c=c1, sum=out[1], carry=c2);          // brody -- adds each continuted bit, adjusting for the previous bit carry (c(n) where n is the position in the bit)
+        FullAdder(a=a[1], b=b[1], c=c1, sum=out[1], carry=c2);  // brody -- adds each continuted bit, adjusting for the previous bit carry (c(n) where n is the position in the bit)
         FullAdder(a=a[2], b=b[2], c=c2, sum=out[2], carry=c3);
         FullAdder(a=a[3], b=b[3], c=c3, sum=out[3], carry=c4);
         FullAdder(a=a[4], b=b[4], c=c4, sum=out[4], carry=c5);
