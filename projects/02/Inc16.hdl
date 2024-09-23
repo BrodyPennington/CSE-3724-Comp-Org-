@@ -12,6 +12,8 @@ CHIP Inc16 {
     IN in[16];
     OUT out[16];
 
-    PARTS:
-        Add16(a=in, b[0]=true, out=out);
+    PARTS: 
+        // brody -- uses the Add16 gate to add 1 to a 16bit integer.
+        //       -- you start from the LSB, moving left. 0 turns into 1 until you run into a bit that is 1. When the bit is 1, it turns to 0 and the carry goes to the next significant bit.
+        Add16(a=in, b[0]=true, out=out); 
 }
