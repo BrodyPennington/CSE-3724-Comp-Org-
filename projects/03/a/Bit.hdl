@@ -14,5 +14,19 @@ CHIP Bit {
     OUT out;
 
     PARTS:
+        // selects from the two outputs based on the selection signal (load). 
+        // if load = 1, then the Mux outputs the value of *in* which means a new value is being loaded into the register.
+        // if load = 0, then the Mux outputs the value of dffOut, which is the previous stored value by the DFF.
+        Mux(a=dffOut, b=in, sel=load, out=muxOut);
 
-}
+        // stores the value of muxOut, which is the output of the mux.
+        // dffOut holds the current value that was just stored from the mux.
+        // out is then given muxOut, and outputs.
+        DFF(in=muxOut, out=dffOut, out=out);
+}   
+
+/*
+muxOut ----------out (outputs)
+      \
+       \-----dffOut (stores)
+/*

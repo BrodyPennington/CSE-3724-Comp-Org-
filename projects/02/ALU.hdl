@@ -91,7 +91,7 @@ CHIP ALU {
         //  prx2 is the upper 8 bits
         //  the MSB is set to ng, this checks if the final ALU output is less than zero in the following code
         Not16(in=fxy, out=notfxy);
-        Mux16(a=fxy, b=notfxy, sel=no, out=out, out[0..7] = 8bit1, out[8..15] = 8bit2, out[15] = ng);
+        Mux16(a=fxy, b=notfxy, sel=no, out=out, out[0..7] = pzr1, out[8..15] = pzr2, out[15] = ng);
 
 
         // first Or8way gate checks if any bit in the first (lsb's) 8bit block is 1. if there is, the output (8out1) will be 1, else 8out1 is 0
@@ -99,10 +99,10 @@ CHIP ALU {
         // in the Or gate, it takes the output from both Or8way gates to check if either is 1. If either is 1, it will will output 1 to not8out
 
         // the Not gate negates the above output. if not8out is 1, zr will be 0. if not8out is 0, zr will be 1.
-        Or8Way(in=8bit1, out=8out1);
-        Or8Way(in=8bit2, out=8out2);
-        Or(a=8out1, b=8out2, out=not8out);
-        Not(in=not8out, out=zr);
+        Or8Way(in=pzr1, out=zr1);
+        Or8Way(in=pzr2, out=zr2);
+        Or(a=zr1, b=zr2, out=notzr);
+        Not(in=notzr, out=zr);
 
 }
 
