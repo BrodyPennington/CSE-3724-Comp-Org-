@@ -7,3 +7,16 @@
 // (R0, R1 refer to RAM[0] and RAM[1] respectively.)
 
 // Put your code here.
+
+
+// loads R0
+@0     
+// stores R0 into D register
+D=M 
+// doubles the value
+D=D+M
+
+// loads R1
+@1
+// stores doubled value in R1
+M=D
