@@ -45,26 +45,40 @@ M=0           // Set i to 0
 
 // Begin LOOP
 (LOOP)
-    @i        // Load i
-    D=M       // D = i
-    @R0       // Load R0 (the number of times to loop)
-    D=M-D     // D = R0 - i
+// load add of i
+@i      
+// store i in D reg
+D=M     
+// load R0
+@0      
+// D = R0 - i
+D=M-D   
 
-    @END      // If (R0 - i) <= 0, jump to END
-    D;JLE     // Jump if D <= 0
+// load add of END
+@END    
+// jumps to end if the difference of R0 and i is <= 0, which means the loop is complete
+D;JLE  
 
-    // Increment i
-    @i        // Load i
-    M=M+1     // i++
+// load add of i
+@i
+// store i in D reg
+D=M  
+// inc i by 1      
+M=M+1      
 
-    // Go back to LOOP
-    @LOOP     // Jump to the start of the loop
-    0;JMP
+// loads LOOP add
+@LOOP
+// unconditional jump, restarting the loop  
+0;JMP
+
 
 // Begin END
 (END)
-    @R1       // Address of R1
-    M=-1      // Store -1 in R1
-
-    @END      // Loop infinitely at the end
-    0;JMP
+// load add of i
+@i 
+// store i in D reg      
+D=M 
+// load R1      
+@R1
+// set R1 to D reg value 
+M=D       
