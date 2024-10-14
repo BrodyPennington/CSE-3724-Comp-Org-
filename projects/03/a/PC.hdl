@@ -16,5 +16,16 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
+        Inc16(in=loop, out=inc16Out);
+        // chooses whether the incremented bit or the last outputed bit is pushed through.
+        Mux16(a=loop, b=inc16Out, sel=inc, out=incOut);
 
+        // chooses between the output of the mux gate above or the input is loaded.
+        Mux16(a=incOut, b=in, sel=load, out=loadOut);
+
+        // chooses between the the loadOut value or to reset the PC
+        Mux16(a=loadOut, b[0..15]=false, sel=reset, out=resetOut);
+
+        // always loads the value from resetOut. it will either reset the loop or output the value from load out.
+        Register(in=resetOut, load=true, out=out, out=loop);
 }

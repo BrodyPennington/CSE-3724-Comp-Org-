@@ -15,6 +15,24 @@ CHIP RAM512 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // much like the RAM64, the DMux seperates the load signal into 8 seperate load signals for each RAM64 block based on the higher 3 bits of the address
+    // Only one load signal can be high at a time, meaning only one block can be written to at a time
+    DMux8Way(in=load, sel=address[6..8], a=load0, b=load1, c=load2, d=load3, e=load4, f=load5, g=load6, h=load7);
+
+    // each RAM64 block can store 64 different 16-bit values
+    // the lower 6 bits of the address are used to address 16-bit values within each RAM64
+
+    RAM64(in=in, load=load0, address=address[0..5], out=out0);
+    RAM64(in=in, load=load1, address=address[0..5], out=out1);
+    RAM64(in=in, load=load2, address=address[0..5], out=out2);
+    RAM64(in=in, load=load3, address=address[0..5], out=out3);
+    RAM64(in=in, load=load4, address=address[0..5], out=out4);
+    RAM64(in=in, load=load5, address=address[0..5], out=out5);
+    RAM64(in=in, load=load6, address=address[0..5], out=out6);
+    RAM64(in=in, load=load7, address=address[0..5], out=out7);
+
+    // this Mux gate selects which of the 8 RAM64 block's outputs will be routed to out
+    // the selection is based on the higher 3 bit address.
+    Mux8Way16(a=out0, b=out1, c=out2, d=out3, e=out4, f=out5, g=out6, h=out7, sel=address[6..8], out=out);
 
 }

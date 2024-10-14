@@ -36,3 +36,35 @@
 // End END
 
 // Put your code here.
+
+// This program loops R0 times and stores -1 in R1 upon completion.
+
+// Initialize i (counter variable) to 0
+@i            // Address of i
+M=0           // Set i to 0
+
+// Begin LOOP
+(LOOP)
+    @i        // Load i
+    D=M       // D = i
+    @R0       // Load R0 (the number of times to loop)
+    D=M-D     // D = R0 - i
+
+    @END      // If (R0 - i) <= 0, jump to END
+    D;JLE     // Jump if D <= 0
+
+    // Increment i
+    @i        // Load i
+    M=M+1     // i++
+
+    // Go back to LOOP
+    @LOOP     // Jump to the start of the loop
+    0;JMP
+
+// Begin END
+(END)
+    @R1       // Address of R1
+    M=-1      // Store -1 in R1
+
+    @END      // Loop infinitely at the end
+    0;JMP
