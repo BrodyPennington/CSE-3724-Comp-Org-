@@ -7,3 +7,14 @@
 // (R0, R1 refer to RAM[0] and RAM[1] respectively.)
 
 // Put your code here.
+
+
+// load R0
+@0
+// negate the value
+D=-M
+
+// load R1
+@1
+// store negated value in R1
+M=D
