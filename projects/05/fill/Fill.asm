@@ -12,3 +12,42 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+// the number of 16 bit pixels needed to cover the screen
+(INIT)
+    @8192
+    D=A
+    // initializes index to 8192
+    @i
+    M=D
+
+(LOOP)
+    @i
+    M=M-1
+    D=M
+    @INIT
+    D;JLT
+    @KBD 
+    D=M
+    @WHITE
+    D;JEQ
+    @BLACK 
+    0;JMP
+
+(BLACK)
+    @SCREEN 
+    D=A 
+    @i 
+    A=D+M 
+    M=-1
+    @LOOP
+    0;JMP
+
+(WHITE)
+    @SCREEN
+    D=A    
+    @i 
+    A=D+M 
+    M=0
+    @LOOP
+    0;JMP
