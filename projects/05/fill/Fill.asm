@@ -15,39 +15,72 @@
 
 // the number of 16 bit pixels needed to cover the screen
 (INIT)
+    // load 8192 constant (total number of pixels in the screen)
     @8192
+    // D = 8192
     D=A
-    // initializes index to 8192
-    @i
+    // load index
+    @i  
+    // set index variable to 8192      
     M=D
 
 (LOOP)
+    // load index
     @i
+    // decrement counter
     M=M-1
+    // store new counter value
     D=M
+    // load Initial Address
     @INIT
+    // if counter <= 0, jump back to initial ^
     D;JLT
+
+    // load keyboard mem map
     @KBD 
+    // store keyboard input
     D=M
+
+    // load white instruction address
     @WHITE
+    // if keyboard = 0 (no input), screen is white
     D;JEQ
+
+    // else
+
+    // load black instruction address
     @BLACK 
+    // unconditional jump to black routine
     0;JMP
 
 (BLACK)
+    // screen mem address
     @SCREEN 
+    // D = screen address
     D=A 
+    // load index
     @i 
+    // current 16-bit pixel address (start position + offset)
     A=D+M 
+    // set pixel black
     M=-1
+    // load loop
     @LOOP
+    // jump back to loop
     0;JMP
 
 (WHITE)
+    // screen mem address
     @SCREEN
+    // D = screen address
     D=A    
+    // load index
     @i 
+    // current 16-bit pixel address (start position + offset)
     A=D+M 
+    // set pixel white
     M=0
+    // load loop
     @LOOP
+    // jump back to loop
     0;JMP
