@@ -27,11 +27,24 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-        DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=loadscreen, d=kbdload);
-        Or(a=ram1, b=ram2, out=loadram);
+    // DMux4Way sends load to one of four destinations based on address[13..14]:
+    // ram1, ram2 for RAM, loadscreen for Screen, kbdload for Keyboard.
+    DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=loadscreen, d=kbdload);
+
+    // Or gate combines ram1 & ram2 load signals for RAM16K.
+    Or(a=ram1, b=ram2, out=loadram);
+
+    // RAM16K is the main memory storage with an addressable range of 14 bits.
+    // takes 'in' as data input, 'loadram' as load signal, and outputs 'ramout' based on address lines.
     RAM16K(in=in, load=loadram, address=address[0..13], out=ramout);
+
+    // Screen is the screen hardware with a 13-bit address range.
+    // receives 'in' as data, 'loadscreen' as the load control, and outputs 'scrout'.
     Screen(in=in, load=loadscreen, address=address[0..12], out=scrout);
+    // Keyboard outputs 'kbdout', which holds the state of the keyboard.
     Keyboard(out=kbdout);
+    // Mux4Way16 selects one of four 16-bit inputs based on 'address[13..14]'.
+    // selected input is then directed to the out line.
     Mux4Way16(a=ramout, b=ramout, c=scrout, d=kbdout, sel=address[13..14], out=out);
 
 }

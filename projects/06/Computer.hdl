@@ -19,6 +19,17 @@ CHIP Computer {
     IN reset;
 
     PARTS:
-    // Put your code here:
+        // takes 'pc' as address input and outputs the current 'instruction'.
+        ROM32K(address=pc, out=instruction);
+
+        // processes the current instruction and data from memory.
+        // takes 'memOut' as data input, 'instruction' as instruction, and 'reset' to reset.
+        // outputs 'outM', 'writeM', 'addressM', and updates 'pc'.
+        CPU(inM=memOut, instruction=instruction, reset=reset, outM=outM, writeM=writeM, addressM=addressM, pc=pc);
+
+        // main memory component.
+        // takes 'outM' as input, 'writeM' as load, and 'addressM' as address.
+        // outputs 'memOut'.
+        Memory(in=outM, load=writeM, address=addressM, out=memOut);
 
 }

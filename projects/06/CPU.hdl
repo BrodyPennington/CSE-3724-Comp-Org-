@@ -38,37 +38,57 @@ CHIP CPU {
         addressM[15],    // Address in data memory (of M)
         pc[15];          // address of next instruction
 
+
+
+
     PARTS:
-    Not(in=instruction[15], out=Ainstruction);
-    Not(in=Ainstruction, out=Cinstruction);
 
-    And(a=Cinstruction, b=instruction[5], out=ALUtoA);
-    Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=ARegin);
 
-    Or(a=Ainstruction, b=ALUtoA, out=loadA);
-    ARegister(in=ARegin, load=loadA, out=Aout);
+        // Identify instruction
+        // Ainstruction (address)
+        Not(in=instruction[15], out=Ainstruction);
+        // or Cinstruction (computation).
+        Not(in=Ainstruction, out=Cinstruction);
 
-    Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);
+        // Determine if ALU output should go to A register based on instruction[5].
+        And(a=Cinstruction, b=instruction[5], out=ALUtoA);
+        Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=ARegin);
 
-    And(a=Cinstruction, b=instruction[4], out=loadD);
-    DRegister(in=ALUout, load=loadD, out=Dout);
+        // Load A register for A-instructions or when ALUtoA is active.
+        Or(a=Ainstruction, b=ALUtoA, out=loadA);
+        ARegister(in=ARegin, load=loadA, out=Aout);
 
-    ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10],
+        // Select A register or memory (inM) as input to ALU based on instruction[12].
+        Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);
+
+        // Load D register when Cinstruction and instruction[4] are active.
+        And(a=Cinstruction, b=instruction[4], out=loadD);
+        DRegister(in=ALUout, load=loadD, out=Dout);
+
+        // ALU operation based on control bits (instruction[11..6]), outputting ALUout, ZRout, and NGout.
+        ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10],
         zy=instruction[9], ny=instruction[8], f=instruction[7],
         no=instruction[6], out=ALUout, zr=ZRout, ng=NGout);
+        
 
-    Or16(a=false, b=Aout, out[0..14]=addressM);
-    Or16(a=false, b=ALUout, out=outM);
-    And(a=Cinstruction, b=instruction[3], out=writeM);
+        // Set addressM from A register and outM from ALU output.
+        Or16(a=false, b=Aout, out[0..14]=addressM);
+        Or16(a=false, b=ALUout, out=outM);
 
-    And(a=ZRout, b=instruction[1], out=jeq);
-    And(a=NGout, b=instruction[2], out=jlt);
-    Or(a=ZRout, b=NGout, out=zeroOrNegate);
-    Not(in=zeroOrNegate, out=positive);
-    And(a=positive, b=instruction[0], out=jgt);
-    Or(a=jeq, b=jlt, out=jle);
-    Or(a=jle, b=jgt, out=jumpA);
-    And(a=Cinstruction, b=jumpA, out=loadPC);
-    Not(in=loadPC, out=incPC);
-    PC(in=Aout, inc=incPC, load=loadPC, reset=reset, out[0..14]=pc);
+        // Determine memory write based on Cinstruction and instruction[3].
+        And(a=Cinstruction, b=instruction[3], out=writeM);
+
+        // Jump conditions for jeq (equal), jlt (less than), and jgt (greater than).
+        And(a=ZRout, b=instruction[1], out=jeq);
+        And(a=NGout, b=instruction[2], out=jlt);
+        Or(a=ZRout, b=NGout, out=zeroOrNegate);
+        Not(in=zeroOrNegate, out=positive);
+        And(a=positive, b=instruction[0], out=jgt);
+
+        // Determine if jump condition is met and update PC.
+        Or(a=jeq, b=jlt, out=jle);
+        Or(a=jle, b=jgt, out=jumpA);
+        And(a=Cinstruction, b=jumpA, out=loadPC);
+        Not(in=loadPC, out=incPC);
+        PC(in=Aout, inc=incPC, load=loadPC, reset=reset, out[0..14]=pc);
 }
